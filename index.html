@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corvus — RSS Reader for Safari on macOS, iOS & iPadOS</title>
+    <meta name="description" content="Subscribe to your favorite websites, YouTube channels, and blogs. Read everything in one place with Corvus, a native RSS reader extension for Safari on macOS, iOS, and iPadOS.">
+    <link rel="canonical" href="https://corvusdevs.github.io/Corvus-For-Safari/">
+    <link rel="alternate" hreflang="en" href="https://corvusdevs.github.io/Corvus-For-Safari/">
+    <link rel="alternate" hreflang="es" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=es">
+    <link rel="alternate" hreflang="fr" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=fr">
+    <link rel="alternate" hreflang="de" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=de">
+    <link rel="alternate" hreflang="pt" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=pt">
+    <link rel="alternate" hreflang="it" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=it">
+    <link rel="alternate" hreflang="ja" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=ja">
+    <link rel="alternate" hreflang="ko" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=ko">
+    <link rel="alternate" hreflang="ru" href="https://corvusdevs.github.io/Corvus-For-Safari/?lang=ru">
+    <link rel="alternate" hreflang="x-default" href="https://corvusdevs.github.io/Corvus-For-Safari/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://corvusdevs.github.io/Corvus-For-Safari/">
+    <meta property="og:title" content="Corvus — RSS Reader for Safari on macOS, iOS & iPadOS">
+    <meta property="og:description" content="Subscribe to your favorite websites, YouTube channels, and blogs. A native Safari extension with folder organization, multiple view modes, and full keyboard shortcuts.">
+    <meta property="og:image" content="https://corvusdevs.github.io/Corvus-For-Safari/images/hero-dark.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Corvus — RSS Reader for Safari on macOS, iOS & iPadOS">
+    <meta name="twitter:description" content="Subscribe to your favorite websites, YouTube channels, and blogs. Native RSS reader for Safari.">
+    <meta name="twitter:image" content="https://corvusdevs.github.io/Corvus-For-Safari/images/hero-dark.jpg">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="rss reader, safari extension, feed reader, atom, rss, news reader, youtube rss, blog reader, macos, ios, ipados, corvus">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Corvus RSS Reader for Safari",
+        "description": "Subscribe to your favorite websites, YouTube channels, and blogs. Read everything in one place with a native RSS reader extension for Safari.",
+        "operatingSystem": "macOS 14.0+, iOS 17.0+, iPadOS 17.0+",
+        "applicationCategory": "NewsApplication",
+        "applicationSubCategory": "RSS Reader",
+        "downloadUrl": "https://apps.apple.com/app/id6761442829",
+        "screenshot": "https://corvusdevs.github.io/Corvus-For-Safari/images/hero-dark.jpg",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Organization", "name": "CorvusDevs", "url": "https://corvusdevs.github.io" }
+    }
+    </script>
+    <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --surface: #111114;
+            --surface-2: #19191e;
+            --border: #252530;
+            --text: #e8e8ed;
+            --text-secondary: #7c7c84;
+            --accent: #ee802f;
+            --accent-light: #f4a261;
+            --accent-dim: rgba(238, 128, 47, 0.1);
+            --accent-glow: rgba(238, 128, 47, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+        }
+
+        .nav-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .nav-brand span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        /* Language Picker */
+        .lang-wrap { position: relative; margin-left: 16px; flex-shrink: 0; }
+        .lang-btn {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+            padding: 6px 28px 6px 12px; color: var(--text); font-size: 13px; cursor: pointer;
+            white-space: nowrap;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237c7c84' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 10px center;
+        }
+        .lang-menu {
+            display: none; position: absolute; top: calc(100% + 6px); right: 0; z-index: 300;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px 0; min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .lang-menu.open { display: block; }
+        .lang-menu button {
+            display: block; width: 100%; padding: 8px 16px; background: none; border: none;
+            color: var(--text); font-size: 13px; cursor: pointer; text-align: left; white-space: nowrap;
+        }
+        .lang-menu button:hover { background: rgba(255,255,255,0.08); }
+        .lang-menu button.active { color: var(--accent); }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 140px 24px 0;
+            position: relative;
+            overflow: visible;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(238, 128, 47, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 28px;
+            margin-bottom: 28px;
+            position: relative;
+            border: 2px solid var(--border);
+            box-shadow: 0 0 60px 20px rgba(238, 128, 47, 0.2), 0 0 120px 50px rgba(238, 128, 47, 0.08);
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        .hero .subtitle {
+            font-size: 19px;
+            color: var(--text-secondary);
+            max-width: 540px;
+            margin: 0 auto 40px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .hero-cta:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 32px rgba(238, 128, 47, 0.3);
+        }
+
+        .hero-cta svg { width: 20px; height: 20px; }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-free {
+            display: block;
+            margin-top: 14px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Hero Showcase — large image below CTA */
+        .hero-showcase {
+            max-width: 1100px;
+            margin: 72px auto 0;
+            position: relative;
+            perspective: 1200px;
+        }
+
+        .hero-showcase img {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow:
+                0 32px 80px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-showcase::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 160px;
+            background: radial-gradient(ellipse, rgba(238, 128, 47, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Showcase Gallery */
+        .showcase {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 24px;
+        }
+
+        .showcase-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .showcase-pair.single {
+            grid-template-columns: 1fr;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .showcase-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+
+        .showcase-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+        }
+
+        .showcase-item img {
+            width: 100%;
+            display: block;
+        }
+
+        .showcase-item .showcase-caption {
+            padding: 20px 24px;
+        }
+
+        .showcase-caption h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .showcase-caption p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Themes Banner — full width dramatic image */
+        .themes-banner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 120px;
+        }
+
+        .themes-banner-inner {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .themes-banner-inner img {
+            width: 100%;
+            display: block;
+        }
+
+        .themes-banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 48px 40px 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+        }
+
+        .themes-banner-overlay h3 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .themes-banner-overlay p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 480px;
+        }
+
+        /* Section Labels */
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 44px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: -1.5px;
+            margin-bottom: 56px;
+            line-height: 1.1;
+        }
+
+        /* Features Grid */
+        .features {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px 100px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(238, 128, 47, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 18px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+        }
+
+        .feature-card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 60px 24px 100px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 56px;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-num {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            border: 1px solid rgba(238, 128, 47, 0.2);
+        }
+
+        .step h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Why Section */
+        .why {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px 100px;
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .why-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .why-card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .why-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Requirements */
+        .req {
+            text-align: center;
+            padding: 0 24px 60px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+        }
+
+        .footer-brand .logo {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand .logo span { color: var(--accent); }
+
+        .footer-brand p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .footer-col h4 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 14px;
+            color: var(--text);
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover { color: var(--accent); }
+
+        .footer-bottom {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-socials a {
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .footer-socials a:hover { color: var(--text); }
+
+        .footer-socials svg { width: 18px; height: 18px; }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .features-grid, .why-grid { grid-template-columns: repeat(2, 1fr); }
+            .showcase-pair { grid-template-columns: 1fr; }
+            .themes-banner-overlay h3 { font-size: 22px; }
+            .themes-banner-overlay p { font-size: 14px; }
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 40px; letter-spacing: -2px; }
+            .hero .subtitle { font-size: 16px; }
+            .hero { padding-top: 120px; }
+            .section-title { font-size: 30px; }
+            .features-grid, .steps, .why-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; gap: 12px; }
+            nav { padding: 14px 16px; }
+            .nav-links { gap: 16px; }
+            .hero-showcase { margin-top: 48px; }
+            .hero-showcase img { border-radius: 12px; }
+            .showcase { padding: 80px 16px; }
+            .showcase-item { border-radius: 12px; }
+            .themes-banner-inner { border-radius: 16px; }
+            .themes-banner-overlay { padding: 32px 24px 28px; }
+            .themes-banner-overlay h3 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav>
+        <a href="https://corvusdevs.github.io" class="nav-brand">
+            <img src="https://avatars.githubusercontent.com/u/25494090?v=4" alt="CorvusDevs">
+            Corvus<span>Devs</span>
+        </a>
+        <div style="display:flex;align-items:center;">
+            <ul class="nav-links">
+                <li><a href="#features" data-i18n="nav_features">Features</a></li>
+                <li><a href="#showcase" data-i18n="nav_showcase">Showcase</a></li>
+                <li><a href="#how" data-i18n="nav_how">How it works</a></li>
+                <li><a href="mailto:corvusdevs@outlook.com" data-i18n="nav_contact">Contact</a></li>
+            </ul>
+            <div class="lang-wrap" id="langWrap">
+                <button class="lang-btn" id="langBtn">English</button>
+                <div class="lang-menu" id="langMenu">
+                    <button data-lang="en">English</button>
+                    <button data-lang="es">Espa&#xF1;ol</button>
+                    <button data-lang="fr">Fran&#xE7;ais</button>
+                    <button data-lang="de">Deutsch</button>
+                    <button data-lang="pt">Portugu&#xEA;s</button>
+                    <button data-lang="it">Italiano</button>
+                    <button data-lang="ja">&#x65E5;&#x672C;&#x8A9E;</button>
+                    <button data-lang="ko">&#xD55C;&#xAD6D;&#xC5B4;</button>
+                    <button data-lang="ru">&#x0420;&#x0443;&#x0441;&#x0441;&#x043A;&#x0438;&#x0439;</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <img src="icon.png" alt="Corvus" class="hero-icon">
+        <h1 data-i18n-html="hero_title">Corvus RSS<br>for Safari</h1>
+        <p class="subtitle" data-i18n="hero_sub">Subscribe to your favorite websites, YouTube channels, and blogs. Read everything in one place with a native Safari extension for macOS, iOS, and iPadOS.</p>
+        <div class="hero-buttons">
+            <a href="https://apps.apple.com/app/id6761442829" class="hero-cta" id="storeBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span data-i18n="hero_cta_ios">Download for iOS</span>
+            </a>
+            <a href="https://apps.apple.com/app/id6761442829" class="hero-cta" id="storeBtnMac">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span data-i18n="hero_cta_mac">Download for macOS</span>
+            </a>
+        </div>
+        <span class="hero-free" data-i18n="hero_req">iOS 17.0+ &middot; macOS 14.0+</span>
+
+        <!-- Hero Image -->
+        <div class="hero-showcase fade-in">
+            <img src="images/hero-dark.jpg" alt="Corvus RSS Reader — dark theme reading view on a Studio Display" loading="eager">
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="section-label" data-i18n="sec_features">Features</div>
+        <h2 class="section-title" data-i18n="sec_features_title">A complete RSS reader inside Safari</h2>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">&#x1F4E1;</div>
+                <h3 data-i18n="f1_t">RSS & Atom Feeds</h3>
+                <p data-i18n="f1_d">Subscribe to any website with an RSS or Atom feed. Fast continuous refresh, auto-discovery, and built-in feed health tools.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x25B6;&#xFE0F;</div>
+                <h3 data-i18n="f2_t">YouTube Channels</h3>
+                <p data-i18n="f2_d">Subscribe to any YouTube channel directly from its page. Corvus resolves @handles and custom URLs automatically.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x1F4C1;</div>
+                <h3 data-i18n="f3_t">Folder Organization</h3>
+                <p data-i18n="f3_d">Group your feeds into folders and nested sub-folders. Keep Tech, News, YouTube, and Design neatly separated.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x1F4F0;</div>
+                <h3 data-i18n="f4_t">5 View Modes</h3>
+                <p data-i18n="f4_d">Magazine, list, card, expanded, and full-view layouts. Choose the reading experience that works best for you.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x2B50;</div>
+                <h3 data-i18n="f5_t">Star, Pin & Read Later</h3>
+                <p data-i18n="f5_d">Save articles for later, star your favorites, and pin important items. Built-in smart feeds for quick access.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x2328;&#xFE0F;</div>
+                <h3 data-i18n="f6_t">Keyboard Shortcuts</h3>
+                <p data-i18n="f6_d">Navigate, star, refresh, and manage articles entirely from the keyboard. J/K to browse, S to star, V to open, and more.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x1F50D;</div>
+                <h3 data-i18n="f7_t">Full-Text Search</h3>
+                <p data-i18n="f7_d">Search across all your articles by title, content, or author. Find anything instantly, even in thousands of articles.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x1F3A8;</div>
+                <h3 data-i18n="f8_t">Themes & Customization</h3>
+                <p data-i18n="f8_d">Light, dark, and auto themes. Customizable accent colors, font sizes, density settings, and newspaper-style column layouts.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#x1F310;</div>
+                <h3 data-i18n="f9_t">14 Languages</h3>
+                <p data-i18n="f9_d">Fully localized in English, Spanish, French, German, Japanese, Korean, Portuguese, Chinese, and more.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase -->
+    <section class="showcase" id="showcase">
+        <div class="section-label" data-i18n="sec_showcase">Showcase</div>
+        <h2 class="section-title" data-i18n="sec_showcase_title">A Safari RSS reader designed to get out of the way</h2>
+
+        <!-- Full-width dark theme banner -->
+        <div class="themes-banner fade-in" style="padding: 0; margin-bottom: 48px;">
+            <div class="themes-banner-inner">
+                <img src="images/screenshot-dark-fullview.jpg" alt="Corvus full-view layout with dark theme — magazine-style article cards" loading="lazy">
+                <div class="themes-banner-overlay">
+                    <h3 data-i18n="sc_fullview_t">Full-View Layout</h3>
+                    <p data-i18n="sc_fullview_d">A magazine-style reading experience. Articles displayed as rich cards with thumbnails, summaries, and metadata.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two screenshots side by side -->
+        <div class="showcase-pair fade-in">
+            <div class="showcase-item">
+                <img src="images/screenshot-dark-reader.jpg" alt="Corvus three-panel reader view in dark theme" loading="lazy">
+                <div class="showcase-caption">
+                    <h3 data-i18n="sc_reader_t">Three-Panel Reader</h3>
+                    <p data-i18n="sc_reader_d">Sidebar, article list, and reading pane. Navigate your feeds with speed.</p>
+                </div>
+            </div>
+            <div class="showcase-item">
+                <img src="images/screenshot-light-reader.jpg" alt="Corvus three-panel reader view in light theme" loading="lazy">
+                <div class="showcase-caption">
+                    <h3 data-i18n="sc_light_t">Light & Sepia Themes</h3>
+                    <p data-i18n="sc_light_d">Choose the theme that suits your environment. Easy on the eyes, day or night.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- YouTube banner -->
+        <div class="themes-banner fade-in" style="padding: 0; margin-top: 24px;">
+            <div class="themes-banner-inner">
+                <img src="images/screenshot-youtube.jpg" alt="YouTube channel feed displayed as video cards in Corvus" loading="lazy">
+                <div class="themes-banner-overlay">
+                    <h3 data-i18n="sc_youtube_t">YouTube, Your Way</h3>
+                    <p data-i18n="sc_youtube_d">Subscribe to channels without an algorithm. Hide Shorts and see every video in a clean, distraction-free layout.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lifestyle Mockups -->
+    <div class="themes-banner fade-in">
+        <div class="showcase-pair" style="margin-bottom: 0;">
+            <div class="showcase-item" style="border: none; background: none;">
+                <img src="images/hero-light.jpg" alt="Corvus light theme on a Studio Display in a home office" style="border-radius: 16px;" loading="lazy">
+            </div>
+            <div class="showcase-item" style="border: none; background: none;">
+                <img src="images/hero-youtube.jpg" alt="Corvus displaying YouTube feeds on a Studio Display" style="border-radius: 16px;" loading="lazy">
+            </div>
+        </div>
+    </div>
+
+    <!-- Light fullview banner -->
+    <div class="themes-banner fade-in" style="margin-top: 24px;">
+        <div class="themes-banner-inner">
+            <img src="images/screenshot-light-fullview.jpg" alt="Corvus full-view layout in warm sepia theme reading NASA articles" loading="lazy">
+            <div class="themes-banner-overlay" style="background: linear-gradient(to top, rgba(40,30,20,0.9) 0%, transparent 100%);">
+                <h3 data-i18n="sc_warm_t">Warm & Inviting</h3>
+                <p data-i18n="sc_warm_d">The sepia theme transforms your reading experience into something that feels like a favorite bookshop.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How it works -->
+    <section class="how-it-works" id="how">
+        <div class="section-label" data-i18n="sec_how">How it works</div>
+        <h2 class="section-title" data-i18n="sec_how_title">Up and running in seconds</h2>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h3 data-i18n="s1_t">Install from the App Store</h3>
+                <p data-i18n="s1_d">Download Corvus from the App Store. Available on Mac, iPhone, and iPad.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h3 data-i18n="s2_t">Enable in Safari</h3>
+                <p data-i18n="s2_d">Open Safari Settings, go to Extensions, and enable Corvus. Grant permission for the sites you want to subscribe to.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h3 data-i18n="s3_t">Subscribe & Read</h3>
+                <p data-i18n="s3_d">Visit any website or YouTube channel, click the Corvus icon, and subscribe. Your articles appear instantly in the reader.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why -->
+    <section class="why">
+        <div class="section-label" data-i18n="sec_why">Why Corvus</div>
+        <h2 class="section-title" data-i18n="sec_why_title">Built for Safari users</h2>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <h3 data-i18n="w1_t">No account required</h3>
+                <p data-i18n="w1_d">No sign-ups, no cloud sync, no login walls. Your feeds live on your device, ready instantly. Open Safari and start reading.</p>
+            </div>
+            <div class="why-card">
+                <h3 data-i18n="w2_t">Works everywhere</h3>
+                <p data-i18n="w2_d">Subscribe to blogs, news sites, YouTube channels, Reddit, GitHub releases, podcasts, and any site with an RSS or Atom feed.</p>
+            </div>
+            <div class="why-card">
+                <h3 data-i18n="w3_t">Native Safari extension</h3>
+                <p data-i18n="w3_d">Not a Chrome extension ported to Safari. Corvus is built specifically for Safari with native performance, no background processes, and zero data collection.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requirements -->
+    <p class="req" data-i18n="req">Requires macOS 14.0 (Sonoma) or later, or iOS/iPadOS 17.0 or later. Works with Safari 17+.</p>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo"><img src="https://avatars.githubusercontent.com/u/25494090?v=4" alt="" style="width:22px;height:22px;border-radius:5px;vertical-align:middle;margin-right:6px;">Corvus<span>Devs</span></div>
+                <p data-i18n="f_brand">Indie software studio.<br>Building focused, privacy-first tools for Apple platforms.</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="f_legal">Legal</h4>
+                <a href="privacy" data-i18n="f_privacy">Privacy Policy</a>
+                <a href="terms" data-i18n="f_terms">Terms of Service</a>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="f_connect">Connect</h4>
+                <a href="mailto:corvusdevs@outlook.com">corvusdevs@outlook.com</a>
+                <a href="https://github.com/CorvusDevs">GitHub</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CorvusDevs. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="https://github.com/CorvusDevs" aria-label="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    /* ---- Scroll fade-in animations ---- */
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ---- Translations ---- */
+    const T = {
+        en: {
+            nav_features:"Features", nav_showcase:"Showcase", nav_how:"How it works", nav_contact:"Contact",
+            hero_title:"Corvus RSS<br>for Safari", hero_sub:"Subscribe to your favorite websites, YouTube channels, and blogs. Read everything in one place with a native Safari extension for macOS, iOS, and iPadOS.", hero_cta_ios:"Download for iOS", hero_cta_mac:"Download for macOS", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"Features", sec_features_title:"A complete RSS reader inside Safari",
+            f1_t:"RSS & Atom Feeds", f1_d:"Subscribe to any website with an RSS or Atom feed. Fast continuous refresh, auto-discovery, and built-in feed health tools.",
+            f2_t:"YouTube Channels", f2_d:"Subscribe to any YouTube channel directly from its page. Corvus resolves @handles and custom URLs automatically.",
+            f3_t:"Folder Organization", f3_d:"Group your feeds into folders and nested sub-folders. Keep Tech, News, YouTube, and Design neatly separated.",
+            f4_t:"5 View Modes", f4_d:"Magazine, list, card, expanded, and full-view layouts. Choose the reading experience that works best for you.",
+            f5_t:"Star, Pin & Read Later", f5_d:"Save articles for later, star your favorites, and pin important items. Built-in smart feeds for quick access.",
+            f6_t:"Keyboard Shortcuts", f6_d:"Navigate, star, refresh, and manage articles entirely from the keyboard. J/K to browse, S to star, V to open, and more.",
+            f7_t:"Full-Text Search", f7_d:"Search across all your articles by title, content, or author. Find anything instantly, even in thousands of articles.",
+            f8_t:"Themes & Customization", f8_d:"Light, dark, and auto themes. Customizable accent colors, font sizes, density settings, and newspaper-style column layouts.",
+            f9_t:"14 Languages", f9_d:"Fully localized in English, Spanish, French, German, Japanese, Korean, Portuguese, Chinese, and more.",
+            sec_showcase:"Showcase", sec_showcase_title:"A Safari RSS reader designed to get out of the way",
+            sc_fullview_t:"Full-View Layout", sc_fullview_d:"A magazine-style reading experience. Articles displayed as rich cards with thumbnails, summaries, and metadata.",
+            sc_reader_t:"Three-Panel Reader", sc_reader_d:"Sidebar, article list, and reading pane. Navigate your feeds with speed.",
+            sc_light_t:"Light & Sepia Themes", sc_light_d:"Choose the theme that suits your environment. Easy on the eyes, day or night.",
+            sc_youtube_t:"YouTube, Your Way", sc_youtube_d:"Subscribe to channels without an algorithm. Hide Shorts and see every video in a clean, distraction-free layout.",
+            sc_warm_t:"Warm & Inviting", sc_warm_d:"The sepia theme transforms your reading experience into something that feels like a favorite bookshop.",
+            sec_how:"How it works", sec_how_title:"Up and running in seconds",
+            s1_t:"Install from the App Store", s1_d:"Download Corvus from the App Store. Available on Mac, iPhone, and iPad.",
+            s2_t:"Enable in Safari", s2_d:"Open Safari Settings, go to Extensions, and enable Corvus. Grant permission for the sites you want to subscribe to.",
+            s3_t:"Subscribe & Read", s3_d:"Visit any website or YouTube channel, click the Corvus icon, and subscribe. Your articles appear instantly in the reader.",
+            sec_why:"Why Corvus", sec_why_title:"Built for Safari users",
+            w1_t:"No account required", w1_d:"No sign-ups, no cloud sync, no login walls. Your feeds live on your device, ready instantly. Open Safari and start reading.",
+            w2_t:"Works everywhere", w2_d:"Subscribe to blogs, news sites, YouTube channels, Reddit, GitHub releases, podcasts, and any site with an RSS or Atom feed.",
+            w3_t:"Native Safari extension", w3_d:"Not a Chrome extension ported to Safari. Corvus is built specifically for Safari with native performance, no background processes, and zero data collection.",
+            req:"Requires macOS 14.0 (Sonoma) or later, or iOS/iPadOS 17.0 or later. Works with Safari 17+.",
+            f_brand:"Indie software studio.<br>Building focused, privacy-first tools for Apple platforms.",
+            f_legal:"Legal", f_privacy:"Privacy Policy", f_terms:"Terms of Service", f_connect:"Connect",
+        },
+        es: {
+            nav_features:"Funciones", nav_showcase:"Galeria", nav_how:"C\u00f3mo funciona", nav_contact:"Contacto",
+            hero_title:"Corvus RSS<br>para Safari", hero_sub:"Suscr\u00edbete a tus sitios web favoritos, canales de YouTube y blogs. Lee todo en un solo lugar con una extensi\u00f3n nativa de Safari para macOS, iOS e iPadOS.", hero_cta_ios:"Descargar para iOS", hero_cta_mac:"Descargar para macOS", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"Funciones", sec_features_title:"Un lector RSS completo dentro de Safari",
+            f1_t:"Feeds RSS y Atom", f1_d:"Suscr\u00edbete a cualquier sitio web con feed RSS o Atom. Actualizaci\u00f3n r\u00e1pida y continua, autodescubrimiento y herramientas de salud de feeds.",
+            f2_t:"Canales de YouTube", f2_d:"Suscr\u00edbete a cualquier canal de YouTube directamente desde su p\u00e1gina. Corvus resuelve @handles y URLs personalizadas autom\u00e1ticamente.",
+            f3_t:"Organizaci\u00f3n por Carpetas", f3_d:"Agrupa tus feeds en carpetas y subcarpetas. Mant\u00e9n Tech, Noticias, YouTube y Dise\u00f1o bien organizados.",
+            f4_t:"5 Modos de Vista", f4_d:"Revista, lista, tarjetas, expandido y vista completa. Elige la experiencia de lectura que mejor te funcione.",
+            f5_t:"Favoritos y Leer Despu\u00e9s", f5_d:"Guarda art\u00edculos para despu\u00e9s, marca tus favoritos y fija los importantes. Feeds inteligentes para acceso r\u00e1pido.",
+            f6_t:"Atajos de Teclado", f6_d:"Navega, marca favoritos, actualiza y gestiona art\u00edculos desde el teclado. J/K para navegar, S para favorito, V para abrir.",
+            f7_t:"B\u00fasqueda de Texto", f7_d:"Busca en todos tus art\u00edculos por t\u00edtulo, contenido o autor. Encuentra cualquier cosa al instante.",
+            f8_t:"Temas y Personalizaci\u00f3n", f8_d:"Temas claro, oscuro y autom\u00e1tico. Colores personalizables, tama\u00f1os de fuente y dise\u00f1o en columnas.",
+            f9_t:"14 Idiomas", f9_d:"Completamente localizado en espa\u00f1ol, ingl\u00e9s, franc\u00e9s, alem\u00e1n, japon\u00e9s, coreano, portugu\u00e9s, chino y m\u00e1s.",
+            sec_showcase:"Galeria", sec_showcase_title:"Un lector RSS para Safari que no estorba",
+            sc_fullview_t:"Vista Completa", sc_fullview_d:"Una experiencia de lectura tipo revista. Art\u00edculos mostrados como tarjetas ricas con miniaturas y res\u00famenes.",
+            sc_reader_t:"Lector de Tres Paneles", sc_reader_d:"Barra lateral, lista de art\u00edculos y panel de lectura. Navega tus feeds con rapidez.",
+            sc_light_t:"Temas Claro y Sepia", sc_light_d:"Elige el tema que se adapte a tu entorno. F\u00e1cil para la vista, de d\u00eda o de noche.",
+            sc_youtube_t:"YouTube, a tu manera", sc_youtube_d:"Suscr\u00edbete a canales sin algoritmo. Oculta Shorts y ve cada video en un dise\u00f1o limpio y sin distracciones.",
+            sc_warm_t:"C\u00e1lido y Acogedor", sc_warm_d:"El tema sepia transforma tu experiencia de lectura en algo que se siente como una librer\u00eda favorita.",
+            sec_how:"C\u00f3mo funciona", sec_how_title:"Listo en segundos",
+            s1_t:"Instala desde la App Store", s1_d:"Descarga Corvus desde la App Store. Disponible para Mac, iPhone e iPad.",
+            s2_t:"Activa en Safari", s2_d:"Abre Ajustes de Safari, ve a Extensiones y activa Corvus. Concede permiso para los sitios a los que quieras suscribirte.",
+            s3_t:"Suscr\u00edbete y Lee", s3_d:"Visita cualquier sitio web o canal de YouTube, toca el icono de Corvus y suscr\u00edbete. Tus art\u00edculos aparecen al instante.",
+            sec_why:"Por qu\u00e9 Corvus", sec_why_title:"Hecho para usuarios de Safari",
+            w1_t:"Sin cuenta necesaria", w1_d:"Sin registros, sin sincronizaci\u00f3n en la nube, sin barreras. Tus feeds viven en tu dispositivo, listos al instante.",
+            w2_t:"Funciona en todas partes", w2_d:"Suscr\u00edbete a blogs, noticias, canales de YouTube, Reddit, lanzamientos de GitHub, podcasts y cualquier sitio con RSS o Atom.",
+            w3_t:"Extensi\u00f3n nativa de Safari", w3_d:"No es una extensi\u00f3n de Chrome portada a Safari. Corvus est\u00e1 dise\u00f1ado espec\u00edficamente para Safari con rendimiento nativo y cero recolecci\u00f3n de datos.",
+            req:"Requiere macOS 14.0 (Sonoma) o posterior, o iOS/iPadOS 17.0 o posterior. Funciona con Safari 17+.",
+            f_brand:"Estudio indie de software.<br>Herramientas enfocadas y privadas para plataformas Apple.",
+            f_legal:"Legal", f_privacy:"Pol\u00edtica de Privacidad", f_terms:"T\u00e9rminos de Servicio", f_connect:"Contacto",
+        },
+        fr: {
+            nav_features:"Fonctions", nav_showcase:"Galerie", nav_how:"Comment \u00e7a marche", nav_contact:"Contact",
+            hero_title:"Corvus RSS<br>pour Safari", hero_sub:"Abonnez-vous \u00e0 vos sites web pr\u00e9f\u00e9r\u00e9s, cha\u00eenes YouTube et blogs. Lisez tout au m\u00eame endroit avec une extension Safari native pour macOS, iOS et iPadOS.", hero_cta_ios:"T\u00e9l\u00e9charger pour iOS", hero_cta_mac:"T\u00e9l\u00e9charger pour macOS", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"Fonctions", sec_features_title:"Un lecteur RSS complet dans Safari",
+            f1_t:"Flux RSS et Atom", f1_d:"Abonnez-vous \u00e0 n\u2019importe quel site avec un flux RSS ou Atom. Actualisation rapide en continu, d\u00e9couverte automatique et outils de sant\u00e9 des flux.",
+            f2_t:"Cha\u00eenes YouTube", f2_d:"Abonnez-vous \u00e0 n\u2019importe quelle cha\u00eene YouTube directement depuis sa page.",
+            f3_t:"Organisation par Dossiers", f3_d:"Regroupez vos flux dans des dossiers et sous-dossiers.",
+            f4_t:"5 Modes d\u2019Affichage", f4_d:"Magazine, liste, cartes, \u00e9tendu et vue compl\u00e8te. Choisissez votre exp\u00e9rience de lecture.",
+            f5_t:"Favoris et Lire Plus Tard", f5_d:"Enregistrez des articles, marquez vos favoris et \u00e9pinglez les importants.",
+            f6_t:"Raccourcis Clavier", f6_d:"Naviguez, marquez, actualisez et g\u00e9rez vos articles enti\u00e8rement au clavier.",
+            f7_t:"Recherche Plein Texte", f7_d:"Recherchez dans tous vos articles par titre, contenu ou auteur.",
+            f8_t:"Th\u00e8mes et Personnalisation", f8_d:"Th\u00e8mes clair, sombre et automatique. Couleurs, tailles et mises en page personnalisables.",
+            f9_t:"14 Langues", f9_d:"Enti\u00e8rement localis\u00e9 en fran\u00e7ais, anglais, espagnol, allemand, japonais, cor\u00e9en, portugais, chinois et plus.",
+            sec_showcase:"Galerie", sec_showcase_title:"Un lecteur RSS Safari con\u00e7u pour ne pas g\u00eaner",
+            sc_fullview_t:"Vue Compl\u00e8te", sc_fullview_d:"Une exp\u00e9rience de lecture style magazine. Articles affich\u00e9s en cartes riches.",
+            sc_reader_t:"Lecteur Trois Panneaux", sc_reader_d:"Barre lat\u00e9rale, liste d\u2019articles et volet de lecture.",
+            sc_light_t:"Th\u00e8mes Clair et S\u00e9pia", sc_light_d:"Choisissez le th\u00e8me adapt\u00e9 \u00e0 votre environnement.",
+            sc_youtube_t:"YouTube, \u00e0 votre fa\u00e7on", sc_youtube_d:"Abonnez-vous sans algorithme. Masquez les Shorts et voyez chaque vid\u00e9o dans une mise en page propre.",
+            sc_warm_t:"Chaleureux et Accueillant", sc_warm_d:"Le th\u00e8me s\u00e9pia transforme votre exp\u00e9rience de lecture.",
+            sec_how:"Comment \u00e7a marche", sec_how_title:"Pr\u00eat en quelques secondes",
+            s1_t:"Installez depuis l\u2019App Store", s1_d:"T\u00e9l\u00e9chargez Corvus depuis l\u2019App Store. Disponible sur Mac, iPhone et iPad.",
+            s2_t:"Activez dans Safari", s2_d:"Ouvrez les R\u00e9glages Safari, allez dans Extensions et activez Corvus.",
+            s3_t:"Abonnez-vous et Lisez", s3_d:"Visitez n\u2019importe quel site ou cha\u00eene YouTube, cliquez sur l\u2019ic\u00f4ne Corvus et abonnez-vous.",
+            sec_why:"Pourquoi Corvus", sec_why_title:"Con\u00e7u pour les utilisateurs Safari",
+            w1_t:"Aucun compte requis", w1_d:"Pas d\u2019inscription, pas de cloud, pas de barri\u00e8res. Vos flux vivent sur votre appareil.",
+            w2_t:"Fonctionne partout", w2_d:"Blogs, sites d\u2019actualit\u00e9s, YouTube, Reddit, GitHub, podcasts et tout site avec RSS ou Atom.",
+            w3_t:"Extension Safari native", w3_d:"Pas un port de Chrome. Corvus est con\u00e7u sp\u00e9cifiquement pour Safari avec des performances natives.",
+            req:"N\u00e9cessite macOS 14.0 (Sonoma) ou ult\u00e9rieur, ou iOS/iPadOS 17.0 ou ult\u00e9rieur.",
+            f_brand:"Studio indie de logiciels.<br>Outils cibl\u00e9s et respectueux de la vie priv\u00e9e pour les plateformes Apple.",
+            f_legal:"L\u00e9gal", f_privacy:"Politique de Confidentialit\u00e9", f_terms:"Conditions d\u2019Utilisation", f_connect:"Contact",
+        },
+        de: {
+            nav_features:"Funktionen", nav_showcase:"Galerie", nav_how:"So funktioniert\u2019s", nav_contact:"Kontakt",
+            hero_title:"Corvus RSS<br>f\u00fcr Safari", hero_sub:"Abonniere deine Lieblingswebsites, YouTube-Kan\u00e4le und Blogs. Lies alles an einem Ort mit einer nativen Safari-Erweiterung f\u00fcr macOS, iOS und iPadOS.", hero_cta_ios:"F\u00fcr iOS laden", hero_cta_mac:"F\u00fcr macOS laden", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"Funktionen", sec_features_title:"Ein vollst\u00e4ndiger RSS-Reader in Safari",
+            f1_t:"RSS- & Atom-Feeds", f1_d:"Abonniere jede Website mit RSS- oder Atom-Feed. Schnelle kontinuierliche Aktualisierung, automatische Erkennung und Feed-Health-Tools.",
+            f2_t:"YouTube-Kan\u00e4le", f2_d:"Abonniere jeden YouTube-Kanal direkt von seiner Seite. @Handles werden automatisch aufgel\u00f6st.",
+            f3_t:"Ordner-Organisation", f3_d:"Gruppiere deine Feeds in Ordnern und Unterordnern.",
+            f4_t:"5 Ansichtsmodi", f4_d:"Magazin, Liste, Karten, Erweitert und Vollansicht. W\u00e4hle dein Leseerlebnis.",
+            f5_t:"Favoriten & Sp\u00e4ter Lesen", f5_d:"Speichere Artikel, markiere Favoriten und pinne wichtige Eintr\u00e4ge.",
+            f6_t:"Tastenkombinationen", f6_d:"Navigiere, markiere und verwalte Artikel komplett per Tastatur.",
+            f7_t:"Volltextsuche", f7_d:"Durchsuche alle Artikel nach Titel, Inhalt oder Autor.",
+            f8_t:"Themes & Anpassung", f8_d:"Helles, dunkles und automatisches Theme. Anpassbare Farben, Schriftgr\u00f6\u00dfen und Layouts.",
+            f9_t:"14 Sprachen", f9_d:"Vollst\u00e4ndig lokalisiert in Deutsch, Englisch, Spanisch, Franz\u00f6sisch, Japanisch, Koreanisch und mehr.",
+            sec_showcase:"Galerie", sec_showcase_title:"Ein Safari-RSS-Reader, der nicht st\u00f6rt",
+            sc_fullview_t:"Vollansicht", sc_fullview_d:"Ein Leseerlebnis im Magazin-Stil. Artikel als reichhaltige Karten dargestellt.",
+            sc_reader_t:"Drei-Panel-Reader", sc_reader_d:"Seitenleiste, Artikelliste und Lesebereich.",
+            sc_light_t:"Helle & Sepia-Themes", sc_light_d:"W\u00e4hle das Theme, das zu deiner Umgebung passt.",
+            sc_youtube_t:"YouTube, auf deine Art", sc_youtube_d:"Abonniere Kan\u00e4le ohne Algorithmus. Blende Shorts aus und sieh jedes Video in einem sauberen Layout.",
+            sc_warm_t:"Warm & Einladend", sc_warm_d:"Das Sepia-Theme verwandelt dein Leseerlebnis.",
+            sec_how:"So funktioniert\u2019s", sec_how_title:"In Sekunden einsatzbereit",
+            s1_t:"Aus dem App Store installieren", s1_d:"Lade Corvus aus dem App Store herunter. Verf\u00fcgbar f\u00fcr Mac, iPhone und iPad.",
+            s2_t:"In Safari aktivieren", s2_d:"\u00d6ffne die Safari-Einstellungen, gehe zu Erweiterungen und aktiviere Corvus.",
+            s3_t:"Abonnieren & Lesen", s3_d:"Besuche eine Website oder einen YouTube-Kanal, klicke auf das Corvus-Symbol und abonniere.",
+            sec_why:"Warum Corvus", sec_why_title:"F\u00fcr Safari-Nutzer gebaut",
+            w1_t:"Kein Konto erforderlich", w1_d:"Keine Registrierung, keine Cloud, keine Barrieren. Deine Feeds leben auf deinem Ger\u00e4t.",
+            w2_t:"Funktioniert \u00fcberall", w2_d:"Blogs, Nachrichtenseiten, YouTube, Reddit, GitHub, Podcasts und jede Seite mit RSS oder Atom.",
+            w3_t:"Native Safari-Erweiterung", w3_d:"Kein Chrome-Port. Corvus wurde speziell f\u00fcr Safari mit nativer Performance entwickelt.",
+            req:"Erfordert macOS 14.0 (Sonoma) oder neuer, oder iOS/iPadOS 17.0 oder neuer.",
+            f_brand:"Indie-Softwarestudio.<br>Fokussierte, datenschutzfreundliche Tools f\u00fcr Apple-Plattformen.",
+            f_legal:"Rechtliches", f_privacy:"Datenschutz", f_terms:"Nutzungsbedingungen", f_connect:"Kontakt",
+        },
+        pt: {
+            nav_features:"Recursos", nav_showcase:"Galeria", nav_how:"Como funciona", nav_contact:"Contato",
+            hero_title:"Corvus RSS<br>para Safari", hero_sub:"Assine seus sites favoritos, canais do YouTube e blogs. Leia tudo em um s\u00f3 lugar com uma extens\u00e3o nativa do Safari para macOS, iOS e iPadOS.", hero_cta_ios:"Baixar para iOS", hero_cta_mac:"Baixar para macOS", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"Recursos", sec_features_title:"Um leitor RSS completo dentro do Safari",
+            f1_t:"Feeds RSS e Atom", f1_d:"Assine qualquer site com feed RSS ou Atom. Atualização rápida e contínua, descoberta automática e ferramentas de saúde de feeds.",
+            f2_t:"Canais do YouTube", f2_d:"Assine qualquer canal do YouTube diretamente da p\u00e1gina. @Handles s\u00e3o resolvidos automaticamente.",
+            f3_t:"Organiza\u00e7\u00e3o por Pastas", f3_d:"Agrupe seus feeds em pastas e subpastas.",
+            f4_t:"5 Modos de Visualiza\u00e7\u00e3o", f4_d:"Revista, lista, cart\u00f5es, expandido e visualiza\u00e7\u00e3o completa.",
+            f5_t:"Favoritos e Ler Depois", f5_d:"Salve artigos, marque favoritos e fixe itens importantes.",
+            f6_t:"Atalhos de Teclado", f6_d:"Navegue, marque e gerencie artigos pelo teclado.",
+            f7_t:"Busca em Texto Completo", f7_d:"Pesquise em todos os artigos por t\u00edtulo, conte\u00fado ou autor.",
+            f8_t:"Temas e Personaliza\u00e7\u00e3o", f8_d:"Temas claro, escuro e autom\u00e1tico. Cores, fontes e layouts personaliz\u00e1veis.",
+            f9_t:"14 Idiomas", f9_d:"Totalmente traduzido para portugu\u00eas, ingl\u00eas, espanhol, franc\u00eas, alem\u00e3o, japon\u00e9s e mais.",
+            sec_showcase:"Galeria", sec_showcase_title:"Um leitor RSS para Safari que n\u00e3o atrapalha",
+            sc_fullview_t:"Layout Completo", sc_fullview_d:"Uma experi\u00eancia de leitura estilo revista.",
+            sc_reader_t:"Leitor de Tr\u00eas Pain\u00e9is", sc_reader_d:"Barra lateral, lista de artigos e painel de leitura.",
+            sc_light_t:"Temas Claro e S\u00e9pia", sc_light_d:"Escolha o tema que combina com seu ambiente.",
+            sc_youtube_t:"YouTube, do seu jeito", sc_youtube_d:"Assine canais sem algoritmo. Oculte Shorts e veja cada vídeo em um layout limpo.",
+            sc_warm_t:"Aconchegante", sc_warm_d:"O tema s\u00e9pia transforma sua experi\u00eancia de leitura.",
+            sec_how:"Como funciona", sec_how_title:"Pronto em segundos",
+            s1_t:"Instale pela App Store", s1_d:"Baixe o Corvus na App Store. Dispon\u00edvel para Mac, iPhone e iPad.",
+            s2_t:"Ative no Safari", s2_d:"Abra os Ajustes do Safari, v\u00e1 em Extens\u00f5es e ative o Corvus.",
+            s3_t:"Assine e Leia", s3_d:"Visite qualquer site ou canal do YouTube, toque no \u00edcone do Corvus e assine.",
+            sec_why:"Por que Corvus", sec_why_title:"Feito para usu\u00e1rios do Safari",
+            w1_t:"Sem conta necess\u00e1ria", w1_d:"Sem cadastro, sem nuvem, sem barreiras. Seus feeds vivem no seu dispositivo.",
+            w2_t:"Funciona em todo lugar", w2_d:"Blogs, not\u00edcias, YouTube, Reddit, GitHub, podcasts e qualquer site com RSS ou Atom.",
+            w3_t:"Extens\u00e3o nativa do Safari", w3_d:"N\u00e3o \u00e9 uma extens\u00e3o do Chrome portada. Corvus foi feito especificamente para o Safari.",
+            req:"Requer macOS 14.0 (Sonoma) ou posterior, ou iOS/iPadOS 17.0 ou posterior.",
+            f_brand:"Est\u00fadio indie de software.<br>Ferramentas focadas e privadas para plataformas Apple.",
+            f_legal:"Legal", f_privacy:"Pol\u00edtica de Privacidade", f_terms:"Termos de Servi\u00e7o", f_connect:"Contato",
+        },
+        it: {
+            nav_features:"Funzionalit\u00e0", nav_showcase:"Galleria", nav_how:"Come funziona", nav_contact:"Contatto",
+            hero_title:"Corvus RSS<br>per Safari", hero_sub:"Iscriviti ai tuoi siti web preferiti, canali YouTube e blog. Leggi tutto in un unico posto con un\u2019estensione Safari nativa per macOS, iOS e iPadOS.", hero_cta_ios:"Scarica per iOS", hero_cta_mac:"Scarica per macOS", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"Funzionalit\u00e0", sec_features_title:"Un lettore RSS completo in Safari",
+            f1_t:"Feed RSS e Atom", f1_d:"Iscriviti a qualsiasi sito con feed RSS o Atom. Aggiornamento rapido e continuo, rilevamento automatico e strumenti per la salute dei feed.",
+            f2_t:"Canali YouTube", f2_d:"Iscriviti a qualsiasi canale YouTube direttamente dalla sua pagina.",
+            f3_t:"Organizzazione in Cartelle", f3_d:"Raggruppa i tuoi feed in cartelle e sottocartelle.",
+            f4_t:"5 Modalit\u00e0 di Visualizzazione", f4_d:"Rivista, elenco, schede, espanso e vista completa.",
+            f5_t:"Preferiti e Leggi Dopo", f5_d:"Salva articoli, segna i preferiti e fissa quelli importanti.",
+            f6_t:"Scorciatoie da Tastiera", f6_d:"Naviga, segna e gestisci gli articoli dalla tastiera.",
+            f7_t:"Ricerca Full-Text", f7_d:"Cerca in tutti i tuoi articoli per titolo, contenuto o autore.",
+            f8_t:"Temi e Personalizzazione", f8_d:"Temi chiaro, scuro e automatico. Colori, dimensioni e layout personalizzabili.",
+            f9_t:"14 Lingue", f9_d:"Completamente localizzato in italiano, inglese, spagnolo, francese, tedesco, giapponese e altro.",
+            sec_showcase:"Galleria", sec_showcase_title:"Un lettore RSS per Safari che non disturba",
+            sc_fullview_t:"Layout Completo", sc_fullview_d:"Un\u2019esperienza di lettura stile rivista.",
+            sc_reader_t:"Lettore a Tre Pannelli", sc_reader_d:"Barra laterale, elenco articoli e pannello di lettura.",
+            sc_light_t:"Temi Chiaro e Seppia", sc_light_d:"Scegli il tema adatto al tuo ambiente.",
+            sc_youtube_t:"YouTube, a modo tuo", sc_youtube_d:"Iscriviti ai canali senza algoritmo. Nascondi gli Shorts e guarda ogni video in un layout pulito.",
+            sc_warm_t:"Caldo e Accogliente", sc_warm_d:"Il tema seppia trasforma la tua esperienza di lettura.",
+            sec_how:"Come funziona", sec_how_title:"Pronto in pochi secondi",
+            s1_t:"Installa dall\u2019App Store", s1_d:"Scarica Corvus dall\u2019App Store. Disponibile per Mac, iPhone e iPad.",
+            s2_t:"Attiva in Safari", s2_d:"Apri le Impostazioni di Safari, vai su Estensioni e attiva Corvus.",
+            s3_t:"Iscriviti e Leggi", s3_d:"Visita qualsiasi sito o canale YouTube, tocca l\u2019icona Corvus e iscriviti.",
+            sec_why:"Perch\u00e9 Corvus", sec_why_title:"Progettato per gli utenti Safari",
+            w1_t:"Nessun account richiesto", w1_d:"Nessuna registrazione, nessun cloud, nessuna barriera. I tuoi feed vivono sul tuo dispositivo.",
+            w2_t:"Funziona ovunque", w2_d:"Blog, siti di notizie, YouTube, Reddit, GitHub, podcast e qualsiasi sito con RSS o Atom.",
+            w3_t:"Estensione Safari nativa", w3_d:"Non \u00e8 un\u2019estensione Chrome portata su Safari. Corvus \u00e8 progettato specificamente per Safari.",
+            req:"Richiede macOS 14.0 (Sonoma) o successivo, o iOS/iPadOS 17.0 o successivo.",
+            f_brand:"Studio software indipendente.<br>Strumenti mirati e rispettosi della privacy per piattaforme Apple.",
+            f_legal:"Legale", f_privacy:"Informativa sulla Privacy", f_terms:"Termini di Servizio", f_connect:"Contatto",
+        },
+        ja: {
+            nav_features:"\u6a5f\u80fd", nav_showcase:"\u30ae\u30e3\u30e9\u30ea\u30fc", nav_how:"\u4f7f\u3044\u65b9", nav_contact:"\u304a\u554f\u3044\u5408\u308f\u305b",
+            hero_title:"Corvus RSS<br>for Safari", hero_sub:"\u304a\u6c17\u306b\u5165\u308a\u306eWeb\u30b5\u30a4\u30c8\u3001YouTube\u30c1\u30e3\u30f3\u30cd\u30eb\u3001\u30d6\u30ed\u30b0\u3092\u8cfc\u8aad\u3002macOS\u3001iOS\u3001iPadOS\u5bfe\u5fdc\u306eSafari\u30cd\u30a4\u30c6\u30a3\u30d6\u62e1\u5f35\u6a5f\u80fd\u3067\u3059\u3079\u3066\u3092\u4e00\u304b\u6240\u3067\u8aad\u3081\u307e\u3059\u3002", hero_cta_ios:"iOS\u7248\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9", hero_cta_mac:"macOS\u7248\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"\u6a5f\u80fd", sec_features_title:"Safari\u5185\u306e\u5b8c\u5168\u306aRSS\u30ea\u30fc\u30c0\u30fc",
+            f1_t:"RSS & Atom\u30d5\u30a3\u30fc\u30c9", f1_d:"RSS\u307e\u305f\u306fAtom\u30d5\u30a3\u30fc\u30c9\u3092\u914d\u4fe1\u3059\u308b\u3042\u3089\u3086\u308bWeb\u30b5\u30a4\u30c8\u3092\u8cfc\u8aad\u3002\u9ad8\u901f\u30d0\u30c3\u30af\u30b0\u30e9\u30a6\u30f3\u30c9\u66f4\u65b0\u3001\u81ea\u52d5\u691c\u51fa\u3001\u30d5\u30a3\u30fc\u30c9\u30d8\u30eb\u30b9\u30c4\u30fc\u30eb\u5185\u8535\u3002",
+            f2_t:"YouTube\u30c1\u30e3\u30f3\u30cd\u30eb", f2_d:"\u30c1\u30e3\u30f3\u30cd\u30eb\u30da\u30fc\u30b8\u304b\u3089\u76f4\u63a5\u8cfc\u8aad\u3002@\u30cf\u30f3\u30c9\u30eb\u3082\u81ea\u52d5\u89e3\u6c7a\u3002",
+            f3_t:"\u30d5\u30a9\u30eb\u30c0\u30fc\u6574\u7406", f3_d:"\u30d5\u30a3\u30fc\u30c9\u3092\u30d5\u30a9\u30eb\u30c0\u30fc\u3068\u30b5\u30d6\u30d5\u30a9\u30eb\u30c0\u30fc\u3067\u6574\u7406\u3002",
+            f4_t:"5\u3064\u306e\u8868\u793a\u30e2\u30fc\u30c9", f4_d:"\u30de\u30ac\u30b8\u30f3\u3001\u30ea\u30b9\u30c8\u3001\u30ab\u30fc\u30c9\u3001\u62e1\u5f35\u3001\u30d5\u30eb\u30d3\u30e5\u30fc\u306e\u30ec\u30a4\u30a2\u30a6\u30c8\u3002",
+            f5_t:"\u304a\u6c17\u306b\u5165\u308a & \u5f8c\u3067\u8aad\u3080", f5_d:"\u8a18\u4e8b\u3092\u4fdd\u5b58\u3001\u304a\u6c17\u306b\u5165\u308a\u767b\u9332\u3001\u91cd\u8981\u306a\u30a2\u30a4\u30c6\u30e0\u3092\u30d4\u30f3\u7559\u3081\u3002",
+            f6_t:"\u30ad\u30fc\u30dc\u30fc\u30c9\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8", f6_d:"\u30ad\u30fc\u30dc\u30fc\u30c9\u3060\u3051\u3067\u8a18\u4e8b\u3092\u64cd\u4f5c\u3002J/K\u3067\u30ca\u30d3\u30b2\u30fc\u30c8\u3001S\u3067\u304a\u6c17\u306b\u5165\u308a\u3001V\u3067\u958b\u304f\u3002",
+            f7_t:"\u5168\u6587\u691c\u7d22", f7_d:"\u30bf\u30a4\u30c8\u30eb\u3001\u5185\u5bb9\u3001\u8457\u8005\u3067\u5168\u8a18\u4e8b\u3092\u691c\u7d22\u3002",
+            f8_t:"\u30c6\u30fc\u30de & \u30ab\u30b9\u30bf\u30de\u30a4\u30ba", f8_d:"\u30e9\u30a4\u30c8\u3001\u30c0\u30fc\u30af\u3001\u81ea\u52d5\u30c6\u30fc\u30de\u3002\u30ab\u30b9\u30bf\u30de\u30a4\u30ba\u53ef\u80fd\u306a\u30ab\u30e9\u30fc\u3001\u30d5\u30a9\u30f3\u30c8\u3001\u30ec\u30a4\u30a2\u30a6\u30c8\u3002",
+            f9_t:"14\u8a00\u8a9e\u5bfe\u5fdc", f9_d:"\u65e5\u672c\u8a9e\u3001\u82f1\u8a9e\u3001\u30b9\u30da\u30a4\u30f3\u8a9e\u3001\u30d5\u30e9\u30f3\u30b9\u8a9e\u3001\u30c9\u30a4\u30c4\u8a9e\u3001\u97d3\u56fd\u8a9e\u306a\u3069\u306b\u5b8c\u5168\u5bfe\u5fdc\u3002",
+            sec_showcase:"\u30ae\u30e3\u30e9\u30ea\u30fc", sec_showcase_title:"\u90aa\u9b54\u306b\u306a\u3089\u306a\u3044Safari RSS\u30ea\u30fc\u30c0\u30fc",
+            sc_fullview_t:"\u30d5\u30eb\u30d3\u30e5\u30fc", sc_fullview_d:"\u30de\u30ac\u30b8\u30f3\u30b9\u30bf\u30a4\u30eb\u306e\u8aad\u66f8\u4f53\u9a13\u3002",
+            sc_reader_t:"\u4e09\u30d1\u30cd\u30eb\u30ea\u30fc\u30c0\u30fc", sc_reader_d:"\u30b5\u30a4\u30c9\u30d0\u30fc\u3001\u8a18\u4e8b\u30ea\u30b9\u30c8\u3001\u8aad\u307f\u53d6\u308a\u30da\u30a4\u30f3\u3002",
+            sc_light_t:"\u30e9\u30a4\u30c8 & \u30bb\u30d4\u30a2\u30c6\u30fc\u30de", sc_light_d:"\u74b0\u5883\u306b\u5408\u3063\u305f\u30c6\u30fc\u30de\u3092\u9078\u3079\u307e\u3059\u3002",
+            sc_youtube_t:"YouTube\u3092\u81ea\u5206\u6d41\u3067", sc_youtube_d:"\u30a2\u30eb\u30b4\u30ea\u30ba\u30e0\u306a\u3057\u3067\u30c1\u30e3\u30f3\u30cd\u30eb\u3092\u8cfc\u8aad\u3002\u30b7\u30e7\u30fc\u30c8\u3092\u975e\u8868\u793a\u306b\u3057\u3001\u3059\u3079\u3066\u306e\u52d5\u753b\u3092\u3059\u3063\u304d\u308a\u3057\u305f\u30ec\u30a4\u30a2\u30a6\u30c8\u3067\u3002",
+            sc_warm_t:"\u6e29\u304b\u304f\u5fc3\u5730\u3088\u3044", sc_warm_d:"\u30bb\u30d4\u30a2\u30c6\u30fc\u30de\u3067\u8aad\u66f8\u4f53\u9a13\u304c\u5909\u308f\u308a\u307e\u3059\u3002",
+            sec_how:"\u4f7f\u3044\u65b9", sec_how_title:"\u6570\u79d2\u3067\u6e96\u5099\u5b8c\u4e86",
+            s1_t:"App Store\u304b\u3089\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb", s1_d:"App Store\u304b\u3089Corvus\u3092\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3002Mac\u3001iPhone\u3001iPad\u5bfe\u5fdc\u3002",
+            s2_t:"Safari\u3067\u6709\u52b9\u5316", s2_d:"Safari\u306e\u8a2d\u5b9a\u3092\u958b\u304d\u3001\u62e1\u5f35\u6a5f\u80fd\u3067Corvus\u3092\u6709\u52b9\u306b\u3002",
+            s3_t:"\u8cfc\u8aad\u3057\u3066\u8aad\u3080", s3_d:"Web\u30b5\u30a4\u30c8\u3084YouTube\u30c1\u30e3\u30f3\u30cd\u30eb\u3092\u8a2a\u554f\u3001Corvus\u30a2\u30a4\u30b3\u30f3\u3092\u30af\u30ea\u30c3\u30af\u3057\u3066\u8cfc\u8aad\u3002",
+            sec_why:"\u306a\u305cCorvus", sec_why_title:"Safari\u30e6\u30fc\u30b6\u30fc\u306e\u305f\u3081\u306b",
+            w1_t:"\u30a2\u30ab\u30a6\u30f3\u30c8\u4e0d\u8981", w1_d:"\u767b\u9332\u4e0d\u8981\u3001\u30af\u30e9\u30a6\u30c9\u4e0d\u8981\u3002\u30d5\u30a3\u30fc\u30c9\u306f\u30c7\u30d0\u30a4\u30b9\u4e0a\u306b\u3002",
+            w2_t:"\u3069\u3053\u3067\u3082\u52d5\u4f5c", w2_d:"\u30d6\u30ed\u30b0\u3001\u30cb\u30e5\u30fc\u30b9\u3001YouTube\u3001Reddit\u3001GitHub\u3001\u30dd\u30c3\u30c9\u30ad\u30e3\u30b9\u30c8\u306a\u3069\u3002",
+            w3_t:"\u30cd\u30a4\u30c6\u30a3\u30d6Safari\u62e1\u5f35\u6a5f\u80fd", w3_d:"Chrome\u306e\u79fb\u690d\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002Safari\u5c02\u7528\u306b\u8a2d\u8a08\u3002",
+            req:"macOS 14.0 (Sonoma)\u4ee5\u964d\u3001\u307e\u305f\u306fiOS/iPadOS 17.0\u4ee5\u964d\u304c\u5fc5\u8981\u3067\u3059\u3002",
+            f_brand:"\u30a4\u30f3\u30c7\u30a3\u30fc\u30bd\u30d5\u30c8\u30a6\u30a7\u30a2\u30b9\u30bf\u30b8\u30aa\u3002<br>Apple\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u5411\u3051\u306e\u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u91cd\u8996\u30c4\u30fc\u30eb\u3002",
+            f_legal:"\u6cd5\u7684\u60c5\u5831", f_privacy:"\u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u30dd\u30ea\u30b7\u30fc", f_terms:"\u5229\u7528\u898f\u7d04", f_connect:"\u304a\u554f\u3044\u5408\u308f\u305b",
+        },
+        ko: {
+            nav_features:"\uae30\ub2a5", nav_showcase:"\uac24\ub7ec\ub9ac", nav_how:"\uc0ac\uc6a9 \ubc29\ubc95", nav_contact:"\uc5f0\ub77d\ucc98",
+            hero_title:"Corvus RSS<br>for Safari", hero_sub:"\uc88b\uc544\ud558\ub294 \uc6f9\uc0ac\uc774\ud2b8, YouTube \ucc44\ub110, \ube14\ub85c\uadf8\ub97c \uad6c\ub3c5\ud558\uc138\uc694. macOS, iOS, iPadOS\uc6a9 \ub124\uc774\ud2f0\ube0c Safari \ud655\uc7a5 \ud504\ub85c\uadf8\ub7a8\uc73c\ub85c \ubaa8\ub4e0 \uac83\uc744 \ud55c \uacf3\uc5d0\uc11c \uc77d\uc73c\uc138\uc694.", hero_cta_ios:"iOS\uc6a9 \ub2e4\uc6b4\ub85c\ub4dc", hero_cta_mac:"macOS\uc6a9 \ub2e4\uc6b4\ub85c\ub4dc", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"\uae30\ub2a5", sec_features_title:"Safari \ub0b4\uc758 \uc644\uc804\ud55c RSS \ub9ac\ub354",
+            f1_t:"RSS & Atom \ud53c\ub4dc", f1_d:"RSS \ub610\ub294 Atom \ud53c\ub4dc\uac00 \uc788\ub294 \ubaa8\ub4e0 \uc6f9\uc0ac\uc774\ud2b8\ub97c \uad6c\ub3c5. \ube60\ub978 \ubc31\uadf8\ub77c\uc6b4\ub4dc \uc0c8\ub85c\uace0\uce68, \uc790\ub3d9 \uac80\uc0c9, \ud53c\ub4dc \uc0c1\ud0dc \ub3c4\uad6c \ub0b4\uc7a5.",
+            f2_t:"YouTube \ucc44\ub110", f2_d:"\ucc44\ub110 \ud398\uc774\uc9c0\uc5d0\uc11c \uc9c1\uc811 \uad6c\ub3c5. @\ud578\ub4e4\ub3c4 \uc790\ub3d9 \ud574\uc11d.",
+            f3_t:"\ud3f4\ub354 \uc815\ub9ac", f3_d:"\ud53c\ub4dc\ub97c \ud3f4\ub354\uc640 \ud558\uc704 \ud3f4\ub354\ub85c \uc815\ub9ac.",
+            f4_t:"5\uac00\uc9c0 \ubcf4\uae30 \ubaa8\ub4dc", f4_d:"\ub9e4\uac70\uc9c4, \ub9ac\uc2a4\ud2b8, \uce74\ub4dc, \ud655\uc7a5, \ud480\ubdf0 \ub808\uc774\uc544\uc6c3.",
+            f5_t:"\uc990\uaca8\ucc3e\uae30 & \ub098\uc911\uc5d0 \uc77d\uae30", f5_d:"\uae00 \uc800\uc7a5, \uc990\uaca8\ucc3e\uae30 \ub4f1\ub85d, \uc911\uc694\ud55c \ud56d\ubaa9 \uace0\uc815.",
+            f6_t:"\ud0a4\ubcf4\ub4dc \ub2e8\ucd95\ud0a4", f6_d:"\ud0a4\ubcf4\ub4dc\ub9cc\uc73c\ub85c \uae00 \uc870\uc791. J/K\ub85c \ud0d0\uc0c9, S\ub85c \uc990\uaca8\ucc3e\uae30, V\ub85c \uc5f4\uae30.",
+            f7_t:"\uc804\uccb4 \ud14d\uc2a4\ud2b8 \uac80\uc0c9", f7_d:"\uc81c\ubaa9, \ub0b4\uc6a9, \uc800\uc790\ub85c \ubaa8\ub4e0 \uae00 \uac80\uc0c9.",
+            f8_t:"\ud14c\ub9c8 & \uc0ac\uc6a9\uc790 \uc815\uc758", f8_d:"\ub77c\uc774\ud2b8, \ub2e4\ud06c, \uc790\ub3d9 \ud14c\ub9c8. \uc0ac\uc6a9\uc790 \uc815\uc758 \uc0c9\uc0c1, \uae00\uaf34, \ub808\uc774\uc544\uc6c3.",
+            f9_t:"14\uac1c \uc5b8\uc5b4", f9_d:"\ud55c\uad6d\uc5b4, \uc601\uc5b4, \uc2a4\ud398\uc778\uc5b4, \ud504\ub791\uc2a4\uc5b4, \ub3c5\uc77c\uc5b4, \uc77c\ubcf8\uc5b4 \ub4f1 \uc644\uc804 \uc9c0\uc6d0.",
+            sec_showcase:"\uac24\ub7ec\ub9ac", sec_showcase_title:"\ubc29\ud574\ud558\uc9c0 \uc54a\ub294 Safari RSS \ub9ac\ub354",
+            sc_fullview_t:"\ud480\ubdf0", sc_fullview_d:"\ub9e4\uac70\uc9c4 \uc2a4\ud0c0\uc77c\uc758 \uc77d\uae30 \uacbd\ud5d8.",
+            sc_reader_t:"\uc138 \ud328\ub110 \ub9ac\ub354", sc_reader_d:"\uc0ac\uc774\ub4dc\ubc14, \uae00 \ubaa9\ub85d, \uc77d\uae30 \ud328\ub110.",
+            sc_light_t:"\ub77c\uc774\ud2b8 & \uc138\ud53c\uc544 \ud14c\ub9c8", sc_light_d:"\ud658\uacbd\uc5d0 \ub9de\ub294 \ud14c\ub9c8\ub97c \uc120\ud0dd\ud558\uc138\uc694.",
+            sc_youtube_t:"\ub098\ub9cc\uc758 YouTube", sc_youtube_d:"\uc54c\uace0\ub9ac\uc998 \uc5c6\uc774 \ucc44\ub110 \uad6c\ub3c5. \uc1fc\uce20\ub97c \uc228\uae30\uace0 \uae54\ub054\ud55c \ub808\uc774\uc544\uc6c3\uc73c\ub85c \ubaa8\ub4e0 \ub3d9\uc601\uc0c1\uc744 \ud655\uc778\ud558\uc138\uc694.",
+            sc_warm_t:"\ub530\ub73b\ud558\uace0 \uc544\ub2a5\ud55c", sc_warm_d:"\uc138\ud53c\uc544 \ud14c\ub9c8\ub85c \uc77d\uae30 \uacbd\ud5d8\uc774 \ub2ec\ub77c\uc9d1\ub2c8\ub2e4.",
+            sec_how:"\uc0ac\uc6a9 \ubc29\ubc95", sec_how_title:"\uba87 \ucd08 \ub9cc\uc5d0 \uc900\ube44 \uc644\ub8cc",
+            s1_t:"App Store\uc5d0\uc11c \uc124\uce58", s1_d:"App Store\uc5d0\uc11c Corvus\ub97c \ub2e4\uc6b4\ub85c\ub4dc\ud558\uc138\uc694. Mac, iPhone, iPad \uc9c0\uc6d0.",
+            s2_t:"Safari\uc5d0\uc11c \ud65c\uc131\ud654", s2_d:"Safari \uc124\uc815\uc744 \uc5f4\uace0 \ud655\uc7a5 \ud504\ub85c\uadf8\ub7a8\uc5d0\uc11c Corvus\ub97c \ud65c\uc131\ud654\ud558\uc138\uc694.",
+            s3_t:"\uad6c\ub3c5\ud558\uace0 \uc77d\uae30", s3_d:"\uc6f9\uc0ac\uc774\ud2b8\ub098 YouTube \ucc44\ub110\uc744 \ubc29\ubb38\ud558\uace0 Corvus \uc544\uc774\ucf58\uc744 \ud074\ub9ad\ud558\uc5ec \uad6c\ub3c5\ud558\uc138\uc694.",
+            sec_why:"\uc65c Corvus\uc778\uac00", sec_why_title:"Safari \uc0ac\uc6a9\uc790\ub97c \uc704\ud574",
+            w1_t:"\uacc4\uc815 \ubd88\ud544\uc694", w1_d:"\uac00\uc785, \ud074\ub77c\uc6b0\ub4dc, \uc7a5\ubcbd \uc5c6\uc74c. \ud53c\ub4dc\ub294 \uc7a5\uce58\uc5d0 \uc800\uc7a5.",
+            w2_t:"\uc5b4\ub514\uc11c\ub098 \uc791\ub3d9", w2_d:"\ube14\ub85c\uadf8, \ub274\uc2a4, YouTube, Reddit, GitHub, \ud31c\uce90\uc2a4\ud2b8 \ub4f1.",
+            w3_t:"\ub124\uc774\ud2f0\ube0c Safari \ud655\uc7a5", w3_d:"Chrome \uc774\uc2dd\uc774 \uc544\ub2d9\ub2c8\ub2e4. Safari \uc804\uc6a9\uc73c\ub85c \uc124\uacc4.",
+            req:"macOS 14.0 (Sonoma) \uc774\uc0c1 \ub610\ub294 iOS/iPadOS 17.0 \uc774\uc0c1 \ud544\uc694.",
+            f_brand:"\uc778\ub514 \uc18c\ud504\ud2b8\uc6e8\uc5b4 \uc2a4\ud29c\ub514\uc624.<br>Apple \ud50c\ub7ab\ud3fc\uc744 \uc704\ud55c \ud504\ub77c\uc774\ubc84\uc2dc \uc911\uc2ec \ub3c4\uad6c.",
+            f_legal:"\ubc95\uc801 \uc815\ubcf4", f_privacy:"\uac1c\uc778\uc815\ubcf4 \ucc98\ub9ac\ubc29\uce68", f_terms:"\uc774\uc6a9\uc57d\uad00", f_connect:"\uc5f0\ub77d\ucc98",
+        },
+        ru: {
+            nav_features:"\u0424\u0443\u043d\u043a\u0446\u0438\u0438", nav_showcase:"\u0413\u0430\u043b\u0435\u0440\u0435\u044f", nav_how:"\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442", nav_contact:"\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b",
+            hero_title:"Corvus RSS<br>\u0434\u043b\u044f Safari", hero_sub:"\u041f\u043e\u0434\u043f\u0438\u0441\u044b\u0432\u0430\u0439\u0442\u0435\u0441\u044c \u043d\u0430 \u043b\u044e\u0431\u0438\u043c\u044b\u0435 \u0441\u0430\u0439\u0442\u044b, YouTube-\u043a\u0430\u043d\u0430\u043b\u044b \u0438 \u0431\u043b\u043e\u0433\u0438. \u0427\u0438\u0442\u0430\u0439\u0442\u0435 \u0432\u0441\u0451 \u0432 \u043e\u0434\u043d\u043e\u043c \u043c\u0435\u0441\u0442\u0435 \u0441 \u043d\u0430\u0442\u0438\u0432\u043d\u044b\u043c \u0440\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u0438\u0435\u043c Safari \u0434\u043b\u044f macOS, iOS \u0438 iPadOS.", hero_cta_ios:"\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0434\u043b\u044f iOS", hero_cta_mac:"\u0421\u043a\u0430\u0447\u0430\u0442\u044c \u0434\u043b\u044f macOS", hero_req:"iOS 17.0+ \u00b7 macOS 14.0+",
+            sec_features:"\u0424\u0443\u043d\u043a\u0446\u0438\u0438", sec_features_title:"\u041f\u043e\u043b\u043d\u043e\u0446\u0435\u043d\u043d\u044b\u0439 RSS-\u0440\u0438\u0434\u0435\u0440 \u0432 Safari",
+            f1_t:"RSS \u0438 Atom", f1_d:"\u041f\u043e\u0434\u043f\u0438\u0441\u044b\u0432\u0430\u0439\u0442\u0435\u0441\u044c \u043d\u0430 \u043b\u044e\u0431\u043e\u0439 \u0441\u0430\u0439\u0442 \u0441 RSS \u0438\u043b\u0438 Atom. \u0411\u044b\u0441\u0442\u0440\u043e\u0435 \u0444\u043e\u043d\u043e\u0432\u043e\u0435 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435, \u0430\u0432\u0442\u043e\u043e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d\u0438\u0435 \u043b\u0435\u043d\u0442 \u0438 \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b \u043c\u043e\u043d\u0438\u0442\u043e\u0440\u0438\u043d\u0433\u0430.",
+            f2_t:"YouTube-\u043a\u0430\u043d\u0430\u043b\u044b", f2_d:"\u041f\u043e\u0434\u043f\u0438\u0441\u043a\u0430 \u043d\u0430 \u043a\u0430\u043d\u0430\u043b\u044b \u043f\u0440\u044f\u043c\u043e \u0441\u043e \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u044b. @\u0425\u044d\u043d\u0434\u043b\u044b \u0440\u0430\u0441\u043f\u043e\u0437\u043d\u0430\u044e\u0442\u0441\u044f \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438.",
+            f3_t:"\u041e\u0440\u0433\u0430\u043d\u0438\u0437\u0430\u0446\u0438\u044f \u043f\u0430\u043f\u043e\u043a", f3_d:"\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u0443\u0439\u0442\u0435 \u043b\u0435\u043d\u0442\u044b \u0432 \u043f\u0430\u043f\u043a\u0438 \u0438 \u043f\u043e\u0434\u043f\u0430\u043f\u043a\u0438.",
+            f4_t:"5 \u0440\u0435\u0436\u0438\u043c\u043e\u0432 \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0430", f4_d:"\u0416\u0443\u0440\u043d\u0430\u043b, \u0441\u043f\u0438\u0441\u043e\u043a, \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0438, \u0440\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u044b\u0439 \u0438 \u043f\u043e\u043b\u043d\u044b\u0439 \u0432\u0438\u0434.",
+            f5_t:"\u0418\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435 \u0438 \u041f\u043e\u0437\u0436\u0435", f5_d:"\u0421\u043e\u0445\u0440\u0430\u043d\u044f\u0439\u0442\u0435 \u0441\u0442\u0430\u0442\u044c\u0438, \u043e\u0442\u043c\u0435\u0447\u0430\u0439\u0442\u0435 \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435, \u0437\u0430\u043a\u0440\u0435\u043f\u043b\u044f\u0439\u0442\u0435 \u0432\u0430\u0436\u043d\u043e\u0435.",
+            f6_t:"\u0413\u043e\u0440\u044f\u0447\u0438\u0435 \u043a\u043b\u0430\u0432\u0438\u0448\u0438", f6_d:"\u0423\u043f\u0440\u0430\u0432\u043b\u044f\u0439\u0442\u0435 \u0441\u0442\u0430\u0442\u044c\u044f\u043c\u0438 \u0441 \u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440\u044b. J/K \u0434\u043b\u044f \u043d\u0430\u0432\u0438\u0433\u0430\u0446\u0438\u0438, S \u0434\u043b\u044f \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0433\u043e.",
+            f7_t:"\u041f\u043e\u043b\u043d\u043e\u0442\u0435\u043a\u0441\u0442\u043e\u0432\u044b\u0439 \u043f\u043e\u0438\u0441\u043a", f7_d:"\u0418\u0449\u0438\u0442\u0435 \u043f\u043e \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0443, \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u044e \u0438\u043b\u0438 \u0430\u0432\u0442\u043e\u0440\u0443.",
+            f8_t:"\u0422\u0435\u043c\u044b \u0438 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0430", f8_d:"\u0421\u0432\u0435\u0442\u043b\u0430\u044f, \u0442\u0451\u043c\u043d\u0430\u044f \u0438 \u0430\u0432\u0442\u043e-\u0442\u0435\u043c\u0430. \u041d\u0430\u0441\u0442\u0440\u0430\u0438\u0432\u0430\u0435\u043c\u044b\u0435 \u0446\u0432\u0435\u0442\u0430, \u0448\u0440\u0438\u0444\u0442\u044b, \u043c\u0430\u043a\u0435\u0442\u044b.",
+            f9_t:"14 \u044f\u0437\u044b\u043a\u043e\u0432", f9_d:"\u041f\u043e\u043b\u043d\u0430\u044f \u043b\u043e\u043a\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u044f \u043d\u0430 \u0440\u0443\u0441\u0441\u043a\u0438\u0439, \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439, \u0438\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439 \u0438 \u0434\u0440\u0443\u0433\u0438\u0435.",
+            sec_showcase:"\u0413\u0430\u043b\u0435\u0440\u0435\u044f", sec_showcase_title:"RSS-\u0440\u0438\u0434\u0435\u0440 \u0434\u043b\u044f Safari, \u043a\u043e\u0442\u043e\u0440\u044b\u0439 \u043d\u0435 \u043c\u0435\u0448\u0430\u0435\u0442",
+            sc_fullview_t:"\u041f\u043e\u043b\u043d\u044b\u0439 \u0432\u0438\u0434", sc_fullview_d:"\u0416\u0443\u0440\u043d\u0430\u043b\u044c\u043d\u044b\u0439 \u0441\u0442\u0438\u043b\u044c \u0447\u0442\u0435\u043d\u0438\u044f.",
+            sc_reader_t:"\u0422\u0440\u0451\u0445\u043f\u0430\u043d\u0435\u043b\u044c\u043d\u044b\u0439 \u0440\u0438\u0434\u0435\u0440", sc_reader_d:"\u0411\u043e\u043a\u043e\u0432\u0430\u044f \u043f\u0430\u043d\u0435\u043b\u044c, \u0441\u043f\u0438\u0441\u043e\u043a \u0441\u0442\u0430\u0442\u0435\u0439, \u043f\u0430\u043d\u0435\u043b\u044c \u0447\u0442\u0435\u043d\u0438\u044f.",
+            sc_light_t:"\u0421\u0432\u0435\u0442\u043b\u0430\u044f \u0438 \u0441\u0435\u043f\u0438\u044f", sc_light_d:"\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0435\u043c\u0443 \u043f\u043e\u0434 \u0432\u0430\u0448\u0435 \u043e\u043a\u0440\u0443\u0436\u0435\u043d\u0438\u0435.",
+            sc_youtube_t:"YouTube \u043f\u043e-\u0441\u0432\u043e\u0435\u043c\u0443", sc_youtube_d:"\u041f\u043e\u0434\u043f\u0438\u0441\u043a\u0430 \u0431\u0435\u0437 \u0430\u043b\u0433\u043e\u0440\u0438\u0442\u043c\u043e\u0432. \u0421\u043a\u0440\u044b\u0432\u0430\u0439\u0442\u0435 Shorts \u0438 \u0441\u043c\u043e\u0442\u0440\u0438\u0442\u0435 \u043a\u0430\u0436\u0434\u043e\u0435 \u0432\u0438\u0434\u0435\u043e \u0432 \u0447\u0438\u0441\u0442\u043e\u043c \u043c\u0430\u043a\u0435\u0442\u0435.",
+            sc_warm_t:"\u0422\u0451\u043f\u043b\u044b\u0439 \u0438 \u0443\u044e\u0442\u043d\u044b\u0439", sc_warm_d:"\u0422\u0435\u043c\u0430 \u0441\u0435\u043f\u0438\u044f \u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u0443\u0435\u0442 \u0447\u0442\u0435\u043d\u0438\u0435.",
+            sec_how:"\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442", sec_how_title:"\u0413\u043e\u0442\u043e\u0432\u043e \u0437\u0430 \u0441\u0435\u043a\u0443\u043d\u0434\u044b",
+            s1_t:"\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u0435 \u0438\u0437 App Store", s1_d:"\u0421\u043a\u0430\u0447\u0430\u0439\u0442\u0435 Corvus \u0438\u0437 App Store. \u0414\u043e\u0441\u0442\u0443\u043f\u043d\u043e \u0434\u043b\u044f Mac, iPhone \u0438 iPad.",
+            s2_t:"\u0412\u043a\u043b\u044e\u0447\u0438\u0442\u0435 \u0432 Safari", s2_d:"\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 Safari, \u043f\u0435\u0440\u0435\u0439\u0434\u0438\u0442\u0435 \u0432 \u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u0438\u044f \u0438 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u0435 Corvus.",
+            s3_t:"\u041f\u043e\u0434\u043f\u0438\u0448\u0438\u0442\u0435\u0441\u044c \u0438 \u0447\u0438\u0442\u0430\u0439\u0442\u0435", s3_d:"\u041f\u043e\u0441\u0435\u0442\u0438\u0442\u0435 \u0441\u0430\u0439\u0442 \u0438\u043b\u0438 YouTube-\u043a\u0430\u043d\u0430\u043b, \u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u0438\u043a\u043e\u043d\u043a\u0443 Corvus \u0438 \u043f\u043e\u0434\u043f\u0438\u0448\u0438\u0442\u0435\u0441\u044c.",
+            sec_why:"\u041f\u043e\u0447\u0435\u043c\u0443 Corvus", sec_why_title:"\u0421\u043e\u0437\u0434\u0430\u043d \u0434\u043b\u044f Safari",
+            w1_t:"\u0411\u0435\u0437 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430", w1_d:"\u0411\u0435\u0437 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438, \u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430, \u0431\u0435\u0437 \u0431\u0430\u0440\u044c\u0435\u0440\u043e\u0432. \u041b\u0435\u043d\u0442\u044b \u0445\u0440\u0430\u043d\u044f\u0442\u0441\u044f \u043d\u0430 \u0432\u0430\u0448\u0435\u043c \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0435.",
+            w2_t:"\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0432\u0435\u0437\u0434\u0435", w2_d:"\u0411\u043b\u043e\u0433\u0438, \u043d\u043e\u0432\u043e\u0441\u0442\u0438, YouTube, Reddit, GitHub, \u043f\u043e\u0434\u043a\u0430\u0441\u0442\u044b \u0438 \u043b\u044e\u0431\u043e\u0439 \u0441\u0430\u0439\u0442 \u0441 RSS.",
+            w3_t:"\u041d\u0430\u0442\u0438\u0432\u043d\u043e\u0435 \u0440\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u0438\u0435", w3_d:"\u041d\u0435 \u043f\u043e\u0440\u0442 \u0438\u0437 Chrome. Corvus \u0441\u043e\u0437\u0434\u0430\u043d \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u044c\u043d\u043e \u0434\u043b\u044f Safari.",
+            req:"\u0422\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f macOS 14.0 (Sonoma) \u0438\u043b\u0438 \u043d\u043e\u0432\u0435\u0435, \u0438\u043b\u0438 iOS/iPadOS 17.0 \u0438\u043b\u0438 \u043d\u043e\u0432\u0435\u0435.",
+            f_brand:"\u0418\u043d\u0434\u0438-\u0441\u0442\u0443\u0434\u0438\u044f.<br>\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b \u0441 \u0444\u043e\u043a\u0443\u0441\u043e\u043c \u043d\u0430 \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e\u0441\u0442\u044c \u0434\u043b\u044f Apple.",
+            f_legal:"\u041f\u0440\u0430\u0432\u043e\u0432\u0430\u044f \u0438\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f", f_privacy:"\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u0438", f_terms:"\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u044f", f_connect:"\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b",
+        },
+    };
+
+    let curLang = localStorage.getItem('lang') || navigator.language.slice(0,2);
+    if (!T[curLang]) curLang = 'en';
+
+    function applyLang(lang) {
+        curLang = lang;
+        localStorage.setItem('lang', lang);
+        const d = T[lang] || T.en;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const k = el.getAttribute('data-i18n');
+            if (d[k] !== undefined) el.textContent = d[k];
+        });
+        document.querySelectorAll('[data-i18n-html]').forEach(el => {
+            const k = el.getAttribute('data-i18n-html');
+            if (d[k] !== undefined) el.innerHTML = d[k];
+        });
+        document.querySelectorAll('#langMenu button').forEach(b => {
+            b.classList.toggle('active', b.dataset.lang === lang);
+        });
+        const names = {en:'English',es:'Espa\u00f1ol',fr:'Fran\u00e7ais',de:'Deutsch',pt:'Portugu\u00eas',it:'Italiano',ja:'\u65e5\u672c\u8a9e',ko:'\ud55c\uad6d\uc5b4',ru:'\u0420\u0443\u0441\u0441\u043a\u0438\u0439'};
+        document.getElementById('langBtn').textContent = names[lang] || 'English';
+    }
+
+    document.getElementById('langBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('langMenu').classList.toggle('open');
+    });
+    document.getElementById('langMenu').addEventListener('click', (e) => {
+        const lang = e.target.dataset.lang;
+        if (lang) { applyLang(lang); document.getElementById('langMenu').classList.remove('open'); }
+    });
+    document.addEventListener('click', () => document.getElementById('langMenu').classList.remove('open'));
+
+    applyLang(curLang);
+
+    /* ---- Smooth scroll ---- */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const id = a.getAttribute('href').slice(1);
+            const target = document.getElementById(id);
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        });
+    });
+    </script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "36ef79985b2045c4b271333fe4e427ab"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
