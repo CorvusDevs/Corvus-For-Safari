@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://corvusdevs.github.io/Corvus-For-Safari/</loc>
+    <loc>https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://corvusdevs.github.io/Corvus-For-Safari/privacy</loc>
+    <loc>https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/privacy</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://corvusdevs.github.io/Corvus-For-Safari/terms</loc>
+    <loc>https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/terms</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
