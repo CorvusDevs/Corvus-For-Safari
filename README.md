@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="icon.png" width="128" height="128" alt="Corvus RSS Reader icon" style="border-radius: 22%;">
+  <img src="https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/icon.png" width="128" height="128" alt="Corvus RSS Reader icon">
   <h1>Corvus RSS Reader for Safari</h1>
   <p><strong>A privacy-first RSS and Atom feed reader built natively for Safari</strong></p>
   <p>
@@ -12,7 +12,6 @@
     <img src="https://img.shields.io/badge/iOS-17.0+-000000?style=flat-square&logo=apple&logoColor=white" alt="iOS 17.0+">
     <img src="https://img.shields.io/badge/iPadOS-17.0+-000000?style=flat-square&logo=apple&logoColor=white" alt="iPadOS 17.0+">
     <img src="https://img.shields.io/badge/Languages-29-4CAF50?style=flat-square" alt="29 Languages">
-    <img src="https://img.shields.io/badge/Price-Free-34C759?style=flat-square" alt="Free">
   </p>
   <p>
     <a href="https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/">Website</a>
@@ -24,7 +23,7 @@
 Subscribe to your favorite websites, YouTube channels, and blogs — and read everything in one clean, distraction-free interface. Corvus RSS Reader is not a Chrome extension ported to Safari. It's built specifically for Safari with native performance, no background processes, and zero data collection.
 
 <div align="center">
-  <img src="images/hero-dark.jpg" width="720" alt="Corvus RSS Reader screenshot">
+  <img src="https://corvusdevs.github.io/Corvus-RSS-Reader-For-Safari/images/hero-dark.jpg" width="720" alt="Corvus RSS Reader screenshot">
 </div>
 
 ## Features
