@@ -29,7 +29,7 @@ Subscribe to your favorite websites, YouTube channels, and blogs — and read ev
 ## Features
 
 - **RSS & Atom Feeds** — Subscribe to any website that publishes a feed. Corvus auto-discovers feeds on the page you're visiting.
-- **Discover 600+ Feeds** — Browse a curated directory across 25 categories. Find popular feeds from 32 countries or explore the full international catalog.
+- **Discover Feeds** — Browse a curated directory of 450+ feeds across 34 categories. Explore popular feeds from 47 countries with 4,800+ regional sources, auto-detected from your device language.
 - **YouTube Channels** — Subscribe to any YouTube channel directly from its page. Handles and custom URLs are resolved automatically.
 - **5 View Modes** — Magazine, list, card, expanded, and full-view layouts. Choose the reading experience that works best for you.
 - **Folder Organization** — Group feeds into folders and nested sub-folders. Keep Tech, News, YouTube, and Design neatly separated.
@@ -40,6 +40,7 @@ Subscribe to your favorite websites, YouTube channels, and blogs — and read ev
 - **Keyboard Shortcuts** — Navigate, star, refresh, and manage articles entirely from the keyboard. J/K to browse, S to star, V to open, and more.
 - **OPML Import & Export** — Bring your subscriptions from any other reader, or export them at any time. Your data is always portable.
 - **Feed Health Dashboard** — Monitor the health of your subscriptions. See which feeds are active, broken, or slow to update.
+- **29 Languages** — Fully localized in English, Spanish, French, German, Japanese, Korean, Portuguese, Chinese, Arabic, Czech, Danish, Dutch, Finnish, Hebrew, Hindi, Hungarian, Indonesian, Italian, Malay, Norwegian, Polish, Romanian, Russian, Swedish, Thai, Turkish, Ukrainian, and Vietnamese.
 
 ## Privacy
 
